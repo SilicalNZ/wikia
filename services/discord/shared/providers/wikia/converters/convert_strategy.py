@@ -14,6 +14,7 @@ from services.discord.shared.providers.wikia.converters.parser import (
     Td,
     Li,
     H2,
+    Extra,
 )
 from services.discord.shared.providers.wikia.aiohttp.wikia import Page
 from shared.pydantic import BaseModel
@@ -53,12 +54,12 @@ def handler_trim_empty_tags(content: Handler, page: ConvertedPage):
 
 
 def handler_trim_before_content(content: Handler, page: ConvertedPage):
-    x = 0
     for x, i in enumerate(content.n):
-        if isinstance(i, H2) and i[0] != "Contents":
+        if isinstance(i, H2) and i[0] == "Contents":
+            content.n.pop(x)
+            content.n.pop(x)
+            content.n.pop(x-1)
             break
-
-    content.n = content.n[x:]
 
 
 def handler_merge_td_into_li(content: Handler, page: ConvertedPage):
@@ -75,6 +76,31 @@ def handler_merge_td_into_li(content: Handler, page: ConvertedPage):
                 for j in i:
                     new_li.append(j)
             list_objects = []
+
+
+def handler_join_li_semicolons(content: Handler, page: ConvertedPage):
+    for x, i in enumerate(content.n):
+        if isinstance(i, Li):
+            new_li = Li()
+            for y, val in enumerate(i):
+                if new_li and new_li[-1].endswith(":"):
+                    new_li[-1] += f" {val}"
+                else:
+                    new_li.append(val)
+            content.n[x] = new_li
+
+
+def handler_collapse_ext(content: Handler, page: ConvertedPage):
+    drop = []
+    for x, i in enumerate(content.n):
+        if x and isinstance(i, Extra):
+            content.n[x-1][-1]+= i[0]
+            drop.append(x)
+        elif not x and isinstance(i, Extra):
+            content.n[0] = H2(("Stats", ))
+
+    for x, i in enumerate(drop):
+        content.n.pop(i-x)
 
 
 def handler_find_image(content: Handler, page: ConvertedPage):
