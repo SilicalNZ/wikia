@@ -43,7 +43,7 @@ class PageRegister(Register):
             records = await conn.fetch(query, page_name, wikia_id)
         records = type_convert_to_record(records)
 
-        if len(records) != 1:
+        if len(records) == 0:
             return None
 
         return PageData(**json.loads(records[0]["data"]))
