@@ -1,0 +1,1 @@
+from .wikia import Wikia

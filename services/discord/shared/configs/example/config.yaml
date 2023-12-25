@@ -1,0 +1,9 @@
+discord:
+  application_id: '123456789'
+  debug_guild_id: '123456789'
+  public_key: bd396703929de2af5cc2283a6c58d5a9b6e86a91f83c2ac41f870cc65da3a987
+  token: example_token
+
+database:
+  dsn: example_dsn
+
