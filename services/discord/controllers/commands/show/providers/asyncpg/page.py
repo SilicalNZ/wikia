@@ -37,6 +37,7 @@ class PageRegister(Register):
         from page
         where name ~* $1
           and wikia_id = $2
+        order by length(name)
         """
 
         async with self.pool.acquire() as conn:
