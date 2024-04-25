@@ -83,8 +83,17 @@ def handler_join_li_semicolons(content: Handler, page: ConvertedPage):
         if isinstance(i, Li):
             new_li = Li()
             for y, val in enumerate(i):
-                if new_li and new_li[-1].endswith(":"):
+                if len(val) > 3 and val[0] == "[" and val[2] == "]":
+                    val = val[3:]
+
+                if new_li and (new_li[-1].endswith(":")):
                     new_li[-1] += f" {val}"
+                elif new_li and (val.startswith("'")):
+                    new_li[-1] += val
+                elif new_li and (val.startswith("[") and val.endswith("]")):
+                    continue
+                elif new_li and val.startswith("."):
+                    new_li[-1] += val
                 else:
                     new_li.append(val)
             content.n[x] = new_li
@@ -140,6 +149,9 @@ async def handler_find_colour(content: Handler, page: ConvertedPage):
 
 def handler_find_fields(content: Handler, page: ConvertedPage):
     for name, value in zip(content.n[0::2], content.n[1::2]):
+        if name[0] == "Gallery":
+            break
+
         name = f"**{name[0]}**"
         for x in range(len(value)):
             value[x] = f"• {value[x]}"
