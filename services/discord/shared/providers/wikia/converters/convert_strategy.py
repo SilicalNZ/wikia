@@ -148,20 +148,37 @@ async def handler_find_colour(content: Handler, page: ConvertedPage):
 
 
 def handler_find_fields(content: Handler, page: ConvertedPage):
-    for name, value in zip(content.n[0::2], content.n[1::2]):
+    for name, values in zip(content.n[0::2], content.n[1::2]):
         if name[0] == "Gallery":
             break
 
+        result_str = ""
         name = f"**{name[0]}**"
-        for x in range(len(value)):
-            value[x] = f"• {value[x]}"
-        value = '\n'.join(value)
+
+        for x in range(len(values)):
+            if len(values[x]) > 500:
+                values[x] = f"{values[x]}..."
+
+            append_str = f"• {values[x]}\n"
+
+            if len(result_str) + len(append_str) > 800:
+                page.data.fields = (
+                    *page.data.fields,
+                    PageField(
+                        name=name,
+                        value=result_str,
+                    ),
+                )
+
+                result_str = ""
+
+            result_str += append_str
 
         page.data.fields = (
             *page.data.fields,
             PageField(
                 name=name,
-                value=value,
+                value=result_str,
             ),
         )
 
