@@ -90,7 +90,7 @@ class CommandHandler(InteractionHandlerClass):
         :param wikia_name: Name of the wikia being selected
         :param category_name: Name of the category being selected
         """
-        last_progress_call = datetime.now().replace(microsecond=0) - timedelta(minutes=1)
+        last_progress_call = datetime.now().replace(microsecond=0) - timedelta(seconds=5)
 
         succeeded_page_names, failed_page_names = [], []
         async for succeeded_page_name, failed_page_name, progress in update_pages_from_category(
@@ -104,7 +104,7 @@ class CommandHandler(InteractionHandlerClass):
                 failed_page_names.append(failed_page_name)
 
             now = datetime.now().replace(microsecond=0)
-            if now - last_progress_call < timedelta(minutes=1):
+            if now - last_progress_call < timedelta(seconds=2):
                 continue
 
             last_progress_call = now

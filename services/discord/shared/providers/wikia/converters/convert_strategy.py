@@ -77,6 +77,10 @@ def handler_merge_td_into_li(content: Handler, page: ConvertedPage):
                     new_li.append(j)
             list_objects = []
 
+def handler_remove_leftover_td(content: Handler, page: ConvertedPage):
+    for i in content.n:
+        if isinstance(i, Td):
+            content.n.remove(i)
 
 def handler_join_li_semicolons(content: Handler, page: ConvertedPage):
     for x, i in enumerate(content.n):
