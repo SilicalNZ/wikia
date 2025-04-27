@@ -27,6 +27,12 @@ def handle(func):
         data = await request.json()
         print(data)
 
+        interaction = Interaction(**data)
+
+        response = web.json_response(interaction.response.defer().dict_as_valid_json())
+        await response.prepare(request)
+        await response.write_eof()
+
         return web.json_response(await handlers.handle_interaction(data))
     return _wrapper
 

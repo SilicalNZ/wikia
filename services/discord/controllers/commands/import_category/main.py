@@ -65,7 +65,7 @@ async def update_pages_from_category(wikia_name: WikiaName, category_name: str) 
 
         try:
             new_page = await wikia_converters[wikia_name](page)
-        except:
+        except Exception as e:
             yield None, page.title, x / total_pages
             continue
 
@@ -90,7 +90,7 @@ class CommandHandler(InteractionHandlerClass):
         :param wikia_name: Name of the wikia being selected
         :param category_name: Name of the category being selected
         """
-        last_progress_call = datetime.now().replace(microsecond=0) - timedelta(seconds=5)
+        last_progress_call = datetime.now().replace(microsecond=0) - timedelta(seconds=0.5)
 
         succeeded_page_names, failed_page_names = [], []
         async for succeeded_page_name, failed_page_name, progress in update_pages_from_category(
@@ -104,7 +104,7 @@ class CommandHandler(InteractionHandlerClass):
                 failed_page_names.append(failed_page_name)
 
             now = datetime.now().replace(microsecond=0)
-            if now - last_progress_call < timedelta(seconds=2):
+            if now - last_progress_call < timedelta(seconds=0.5):
                 continue
 
             last_progress_call = now
@@ -125,22 +125,10 @@ class CommandHandler(InteractionHandlerClass):
                 ),
             )
 
-        response = interaction.response.reply((
+        return interaction.response.reply((
             f"Success: {', '.join(succeeded_page_names[-50:])}\n\n"
             f"Failed: {', '.join(failed_page_names[-25:])}"
         ))
-
-        await InteractionResponseAPI(
-            token=interaction.token,
-        ).update(
-            interaction.application_id,
-            message=UpdateWebhookMessageReq(
-                content=response.data.content,
-                embeds=response.data.embeds,
-            ),
-        )
-
-        return interaction.response.reply("Done")
 
 async def connect_db(_: web.Application):
     pool = await asyncpg.create_pool(

@@ -56,9 +56,7 @@ def handler_trim_empty_tags(content: Handler, page: ConvertedPage):
 def handler_trim_before_content(content: Handler, page: ConvertedPage):
     for x, i in enumerate(content.n):
         if isinstance(i, H2) and i[0] == "Contents":
-            content.n.pop(x)
-            content.n.pop(x)
-            content.n.pop(x-1)
+            content.n = content.n[x+2:]
             break
 
 

@@ -35,7 +35,6 @@ def handler_find_stat_fields(content: convert_strategy.Handler, page: convert_st
 async def converter(page: Page) -> convert_strategy.ConvertedPage:
     return await convert_strategy.behaviour(
         (
-            # convert_strategy.handler_trim,
             convert_strategy.handler_find_image,
             convert_strategy.handler_find_colour,
             convert_strategy.handler_trim_empty_tags,
